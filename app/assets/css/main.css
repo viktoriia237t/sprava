@@ -123,3 +123,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .facts div:first-child{border-top:0}
 .facts dt{font-size:.85rem;color:var(--muted)}
 .facts dd{margin:.15rem 0 0;overflow-wrap:anywhere}
+
+.plan p,.plan li{max-width:68ch}
+.plan ul,.plan ol{padding-left:1.25rem}
+.plan li{margin:.35rem 0}
+.plan code{font-size:.88em;background:var(--surface);border:1px solid var(--line);border-radius:.25rem;padding:0 .3rem}
+.table{overflow-x:auto;margin:1rem 0;background:var(--surface);border:1px solid var(--line);border-radius:.75rem}
+.table table{width:100%;border-collapse:collapse;font-size:.95rem}
+.table th,.table td{text-align:left;vertical-align:top;padding:.7rem 1rem;border-top:1px solid var(--line)}
+.table thead th{border-top:0;color:var(--muted);font-weight:700;font-size:.85rem}
+.table code{background:var(--bg)}
