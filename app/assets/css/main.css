@@ -24,7 +24,7 @@ a{color:var(--accent)}
 .wrap{max-width:72rem;margin:0 auto;padding:0 1.25rem}
 h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15;margin:0}
 button,input,select{font:inherit;color:inherit}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 
 header.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.25rem 0}
 .logo{font-family:var(--display);font-weight:700;font-size:1.25rem;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:.5rem}
@@ -45,8 +45,7 @@ nav.top a:hover{color:var(--accent)}
 .steps li{counter-increment:s;padding-left:2.6rem;position:relative}
 .steps li::before{content:counter(s);position:absolute;left:0;top:0;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--sun);color:var(--sun-ink);font:700 .95rem/1.9rem var(--display);text-align:center}
 .steps .what{font-size:.9rem;color:var(--muted)}
-.steps button.svc{all:unset;cursor:pointer;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
-.steps button.svc:focus-visible{outline:3px solid var(--sun)}
+.steps .svc{font-weight:700;color:var(--accent);text-underline-offset:3px}
 .route .actions{margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap}
 @media (prefers-reduced-motion:no-preference){
   .route.flash{animation:flash .5s ease}
@@ -70,7 +69,7 @@ section.block h2.title{font-size:clamp(1.4rem,3vw,2rem);margin-bottom:.5rem}
 .rows{background:var(--surface);border:1px solid var(--line);border-radius:.75rem;overflow:hidden}
 .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;padding:1rem 1.25rem;border-top:1px solid var(--line)}
 .row:first-child{border-top:0}
-.row .name{font-weight:700;font-size:1.05rem;background:none;border:0;padding:0;cursor:pointer;text-align:left;color:var(--ink)}
+.row .name{font-weight:700;font-size:1.05rem;color:var(--ink);text-decoration:none}
 .row .name:hover{color:var(--accent)}
 .row .dom{color:var(--muted);font-size:.85rem;margin-left:.5rem}
 .row p{margin:.2rem 0 0;color:var(--muted);font-size:.95rem}
@@ -95,13 +94,14 @@ section.block h2.title{font-size:clamp(1.4rem,3vw,2rem);margin-bottom:.5rem}
 .note{font-size:.9rem;color:var(--muted)}
 .err{color:var(--danger)}
 
-dialog{border:0;border-radius:.9rem;padding:0;max-width:min(40rem,calc(100% - 2rem));width:100%;max-height:calc(100% - 2rem);background:var(--surface);color:var(--ink)}
-dialog::backdrop{background:rgba(10,15,25,.55)}
-.dlg{padding:1.5rem}
-.dlg header{display:flex;justify-content:space-between;align-items:start;gap:1rem}
-.dlg h2{font-size:1.4rem}
-.x{background:none;border:0;font-size:1.6rem;line-height:1;cursor:pointer;color:var(--muted)}
-.dlg .acts{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+.acts{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+
+.svc-page{padding:1rem 1.25rem 3rem}
+.svc-page h1{font-size:clamp(1.8rem,4.5vw,2.8rem);margin:.5rem 0 .4rem}
+.svc-page .lead{font-size:1.1rem;max-width:60ch;margin:1rem 0 .5rem}
+.svc-page h2.sec{font-size:1.15rem;margin:2.25rem 0 0}
+.svc-page .rows{margin-top:1rem}
+.crumbs{font-size:.9rem;color:var(--muted)}
 
 footer{padding:2.5rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
