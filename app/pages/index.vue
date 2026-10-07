@@ -133,7 +133,7 @@ async function copyKit(){
         <label><span class="sr">Що шукаєте</span><input v-model="askQ" type="search" placeholder="Наприклад: облік складу для магазину" required></label>
         <button class="btn" type="submit" :disabled="askStatus === 'loading'">Шукати в мережі</button>
       </form>
-      <SerpResults :status="askStatus" :items="askItems" />
+      <SerpResults :status="askStatus" :items="askItems" :query="askQ.trim()" />
     </div>
   </section>
 

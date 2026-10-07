@@ -1,5 +1,5 @@
 import { CATS, DATA } from "#shared/catalog";
-import type { CatalogData, SiteCard } from "#shared/freeserp";
+import type { CatalogData, SerpHit, SiteCard } from "#shared/freeserp";
 
 /* Під час `nuxt generate` цей маршрут викликається з кожної сторінки; результат
    потрапляє в _payload.json, тож у браузері запитів до FreeSerp за каталогом немає. */
@@ -18,7 +18,7 @@ interface RawSite {
   dr?: number | null; ai_source?: string | null; real_site?: number;
 }
 
-async function api(params: Record<string, string | number>): Promise<RawSite[]> {
+async function api<T = RawSite>(params: Record<string, string | number>): Promise<T[]> {
   const qs = new URLSearchParams({ ...params, agent: "Sprava/1.0", project: "Справа", } as Record<string, string>);
   for (let attempt = 0; ; attempt++) {
     try {
@@ -86,15 +86,27 @@ async function similar(q: string, kw: string[]): Promise<SiteCard[]> {
   }
 }
 
+async function mentions(q: string): Promise<SerpHit[]> {
+  try {
+    const list = await api<SerpHit>({ index: "web", q, lang: "uk", size: 4 });
+    return list.map(({ url, title, snippet, domain, published_at }) => ({ url, title, snippet, domain, published_at }));
+  } catch (e) {
+    console.warn(`[freeserp] mentions "${q}": ${(e as Error).message}`);
+    return [];
+  }
+}
+
 async function load(): Promise<CatalogData> {
   const cards = await pool(DATA, 4, d => lookup(host(d.url)));
   const sims = await pool(CATS, 4, c => similar(c.fs.q, c.fs.kw));
+  const ments = await pool(DATA, 4, d => mentions(`${d.name} ${host(d.url).split(".")[0]}`));
   const missing = DATA.filter((_, i) => !cards[i]).map(d => d.id);
   if (missing.length) console.warn(`[freeserp] немає даних для: ${missing.join(", ")}`);
   return {
     fetchedAt: new Date().toISOString(),
     sites: Object.fromEntries(DATA.map((d, i) => [d.id, cards[i] ?? null])),
     similar: Object.fromEntries(CATS.map((c, i) => [c.id, sims[i] ?? []])),
+    mentions: Object.fromEntries(DATA.map((d, i) => [d.id, ments[i] ?? []])),
   };
 }
 

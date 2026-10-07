@@ -15,17 +15,11 @@ useSeoMeta({
   ogDescription: d.desc,
 });
 
+const mentionsQuery = `${d.name} ${host(d.url).split(".")[0]}`;
 const types = d.for.map(t => TYPES[t]).join(", ").toLowerCase();
 const related = computed(() => DATA.filter(x => x.cat === d.cat && x.id !== d.id)
   .sort((a, b) => (fs.value.sites[b.id]?.dr ?? -1) - (fs.value.sites[a.id]?.dr ?? -1)));
 
-/* Згадки в мережі завантажуються вже в браузері, щоб у статиці не було застарілих даних */
-const status = ref<"idle" | "loading" | "error" | "done">("loading");
-const mentions = ref<SerpHit[]>([]);
-onMounted(async () => {
-  try { mentions.value = await freeserp(`${d.name} ${host(d.url).split(".")[0]}`, 4); status.value = "done"; }
-  catch { status.value = "error"; }
-});
 </script>
 
 <template>
@@ -54,7 +48,8 @@ onMounted(async () => {
     <p v-if="fs.fetchedAt" class="note">Дані оновлено під час збірки сайту {{ buildDate(fs.fetchedAt) }}.</p>
 
     <h2 class="sec">Згадки в мережі</h2>
-    <SerpResults :status="status" :items="mentions" loading-text="Завантажуємо з FreeSerp…" />
+    <p class="note">Українськомовні сторінки з FreeSerp Global. <a :href="freeserpSearchUrl(mentionsQuery)" target="_blank" rel="noopener">Більше результатів на freeserp.ai</a></p>
+    <SerpResults status="done" :items="fs.mentions[d.id] ?? []" />
 
     <template v-if="related.length">
       <h2 class="sec">Інші сервіси в категорії</h2>

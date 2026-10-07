@@ -4,5 +4,5 @@ import type { CatalogData } from "#shared/freeserp";
    а в браузері дані беруться з уже вбудованого payload. */
 export const useCatalogData = () => useFetch<CatalogData>("/api/catalog", {
   key: "catalog",
-  default: () => ({ fetchedAt: "", sites: {}, similar: {} }),
+  default: () => ({ fetchedAt: "", sites: {}, similar: {}, mentions: {} }),
 });
