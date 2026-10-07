@@ -29,8 +29,8 @@ jobs:
       - run: npm ci
       - run: npm run generate
         env:
-          # Сайт відкривається за адресою https://<user>.github.io/<repo>/
-          NUXT_APP_BASE_URL: /${{ github.event.repository.name }}/
+          # https://<user>.github.io/<repo>/ — або корінь, якщо репозиторій названо <user>.github.io
+          NUXT_APP_BASE_URL: ${{ endsWith(github.event.repository.name, '.github.io') && '/' || format('/{0}/', github.event.repository.name) }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
