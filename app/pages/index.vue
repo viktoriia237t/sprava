@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CATS, TYPES, DATA, ROUTES, byId, catName, type BizType } from "~/data/catalog";
+import { CATS, TYPES, DATA, ROUTES, byId, catName, type BizType } from "#shared/catalog";
 
 useSeoMeta({
   title: "Справа — сервіси для малого бізнесу в Україні",
@@ -10,6 +10,8 @@ useSeoMeta({
 
 const kit = useKit();
 const toast = useToast();
+const { data: fs } = await useCatalogData();
+const site = (id: string) => fs.value.sites[id] ?? null;
 const TYPE_KEY = "sprava-type";
 
 /* Hero: маршрут старту */
@@ -38,11 +40,14 @@ const found = computed(() => DATA.filter(d => {
   if (forType.value && !d.for.includes(forType.value)) return false;
   const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return true;
-  const hay = (d.name + " " + d.desc + " " + catName(d.cat) + " " + host(d.url)).toLowerCase();
+  const s = site(d.id);
+  const hay = [d.name, d.desc, catName(d.cat), host(d.url), s?.title, s?.summary].join(" ").toLowerCase();
   return words.every(w => hay.includes(w));
 }));
 const groups = computed(() => CATS
-  .map(c => ({ ...c, items: found.value.filter(d => d.cat === c.id) }))
+  .map(c => ({ ...c, items: found.value.filter(d => d.cat === c.id)
+    // Усередині категорії спершу сайти з вищим Domain Rating за FreeSerp
+    .sort((a, b) => (site(b.id)?.dr ?? -1) - (site(a.id)?.dr ?? -1)) }))
   .filter(g => g.items.length));
 function toAsk(){ if (q.value.trim()) askQ.value = q.value.trim(); }
 
@@ -94,7 +99,8 @@ async function copyKit(){
   <section id="catalog" class="block" aria-labelledby="catH">
     <div class="wrap">
       <h2 id="catH" class="title">Каталог</h2>
-      <p class="sub">Сервіси, якими користуються ФОП і невеликі компанії в Україні. Натисніть на назву, щоб побачити опис і свіжі згадки в мережі.</p>
+      <p class="sub">Сервіси, якими користуються ФОП і невеликі компанії в Україні. Натисніть на назву, щоб побачити опис, дані FreeSerp і свіжі згадки в мережі.</p>
+      <p v-if="fs.fetchedAt" class="note src">Domain Rating, заголовки та AI-описи сайтів — з <a href="https://freeserp.ai/docs.php" target="_blank" rel="noopener">FreeSerp Main</a>, оновлено під час збірки {{ buildDate(fs.fetchedAt) }}. Сортування в категоріях — за DR.</p>
       <div class="tools">
         <label><span class="sr">Пошук у каталозі</span><input v-model="q" type="search" placeholder="Наприклад: каса, доставка, CRM"></label>
         <label><span class="sr">Тип бізнесу</span>
@@ -114,7 +120,7 @@ async function copyKit(){
       </div>
       <div v-for="g in groups" v-else :key="g.id" class="group">
         <h3>{{ g.name }}</h3>
-        <div class="rows"><ServiceRow v-for="d in g.items" :key="d.id" :d="d" /></div>
+        <div class="rows"><ServiceRow v-for="d in g.items" :key="d.id" :d="d" :dr="site(d.id)?.dr" /></div>
       </div>
     </div>
   </section>

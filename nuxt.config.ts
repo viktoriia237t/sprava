@@ -1,4 +1,4 @@
-import { DATA } from "./app/data/catalog";
+import { DATA } from "./shared/catalog";
 
 // Статична генерація: `nuxt generate` → .output/public.
 // Для GitHub Pages базовий шлях задається через NUXT_APP_BASE_URL (див. .github/workflows/deploy.yml).

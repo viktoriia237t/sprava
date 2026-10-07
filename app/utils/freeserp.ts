@@ -6,10 +6,7 @@ export interface SerpHit {
   published_at?: string;
 }
 
-export const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return u; } };
-export const safeUrl = (u?: string) => /^https?:\/\//i.test(u || "") ? u! : "#";
-
-/* Живий пошук через FreeSerp (index=web, українська мова) */
+/* Живий пошук через FreeSerp Global (index=web, українська мова) — виконується в браузері */
 export async function freeserp(q: string, size = 5): Promise<SerpHit[]> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 9000);
@@ -22,3 +19,6 @@ export async function freeserp(q: string, size = 5): Promise<SerpHit[]> {
     return j.results || [];
   } finally { clearTimeout(timer); }
 }
+
+/* Дата збірки з ISO-рядка без залежності від часового поясу, щоб SSR і браузер показували однакове */
+export const buildDate = (iso: string) => iso ? iso.slice(0, 10).split("-").reverse().join(".") : "";

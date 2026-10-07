@@ -1,4 +1,4 @@
-import { byId } from "~/data/catalog";
+import { byId } from "#shared/catalog";
 
 const KEY = "sprava-kit";
 
